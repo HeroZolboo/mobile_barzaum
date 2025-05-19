@@ -6,11 +6,17 @@ import 'firebase_options.dart';
 import 'login_page.dart';
 import 'admin.dart';
 import 'user.dart';
+import 'home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
+  runApp(
+    MaterialApp(
+      home: AuthGate(), // Use AuthGate for role-based home
+      debugShowCheckedModeBanner: false,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -45,9 +51,9 @@ class AuthGate extends StatelessWidget {
               }
               final data = userSnapshot.data!.data() as Map<String, dynamic>;
               if (data['role'] == 'admin') {
-                return AdminPage();
+                return AdminPage(); // Admins see AdminPage
               } else {
-                return UserPage();
+                return HomePage(); // Users see HomePage
               }
             },
           );

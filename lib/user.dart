@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lab9/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'chat.dart';
 import 'test_list_page.dart';
 import 'score_history.dart';
 
@@ -192,15 +191,6 @@ class UserPage extends StatelessWidget {
                             phone_number,
                           );
                         },
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => ChatPage()),
-                          );
-                        },
-                        icon: Icon(Icons.chat_bubble),
                       ),
                     ],
                   ),

@@ -28,12 +28,12 @@ class ScoreHistoryPage extends StatelessWidget {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(child: Text('No scores found'));
           }
-
-          for (var doc in snapshot.data!.docs) {
-            print(
-              "submittedAt: ${doc['submittedAt']} (${doc['submittedAt'].runtimeType})",
-            );
-          }
+          //DEBUG: uncomment this to see submittedAt
+          //for (var doc in snapshot.data!.docs) {
+          //  print(
+          //    "submittedAt: ${doc['submittedAt']} (${doc['submittedAt'].runtimeType})",
+          //  );
+          //}
 
           final scores = snapshot.data!.docs;
 
@@ -48,21 +48,34 @@ class ScoreHistoryPage extends StatelessWidget {
               final total = data['total'] ?? 0;
               final submittedAt = (data['submittedAt'] as Timestamp).toDate();
 
-              return ListTile(
-                title: Text('Test: $testId'),
-                subtitle: Text('Score: $score / $total'),
-                trailing: Text('${submittedAt.toLocal()}'.substring(0, 16)),
-                onTap: () {
-                  final scoreData = {
-                    ...data,
-                    'scoreId':
-                        doc.id, // Add the document ID in case needed later
-                  };
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ReviewPage(scoreData: scoreData),
-                    ),
+              
+              // If not found, show the testId
+              return FutureBuilder<DocumentSnapshot>(
+                future:
+                    FirebaseFirestore.instance
+                        .collection('tests')
+                        .doc(testId)
+                        .get(),
+                builder: (context, testSnapshot) {
+                  String testTitle = testId;
+                  if (testSnapshot.hasData && testSnapshot.data!.exists) {
+                    final testData =
+                        testSnapshot.data!.data() as Map<String, dynamic>;
+                    testTitle = testData['title'] ?? testId;
+                  }
+                  return ListTile(
+                    title: Text('Test: $testTitle'),
+                    subtitle: Text('Score: $score / $total'),
+                    trailing: Text('${submittedAt.toLocal()}'.substring(0, 16)),
+                    onTap: () {
+                      final scoreData = {...data, 'scoreId': doc.id};
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ReviewPage(scoreData: scoreData),
+                        ),
+                      );
+                    },
                   );
                 },
               );

@@ -21,21 +21,21 @@ class AddQuestionPageState extends State<AddQuestionPage> {
 
   void addQuestion() async {
     final question = questionController.text.trim();
-    final answer = answerController.text.trim();
+    final correctAnswer = answerController.text.trim();
     final options =
         optionControllers
             .map((c) => c.text.trim())
             .where((o) => o.isNotEmpty)
             .toList();
 
-    if (question.isNotEmpty && answer.isNotEmpty) {
+    if (question.isNotEmpty && correctAnswer.isNotEmpty) {
       await FirebaseFirestore.instance
           .collection('tests')
           .doc(widget.testId)
           .collection('questions')
           .add({
             'question': question,
-            'answer': answer,
+            'correctAnswer': correctAnswer,
             'options': options,
             'createdAt': FieldValue.serverTimestamp(),
           });
@@ -109,7 +109,7 @@ class AddQuestionPageState extends State<AddQuestionPage> {
                       .doc(questionId)
                       .update({
                         'question': qController.text.trim(),
-                        'answer': aController.text.trim(),
+                        'correctAnswer': aController.text.trim(),
                         'options': newOptions,
                       });
                   Navigator.pop(context);
@@ -198,7 +198,7 @@ class AddQuestionPageState extends State<AddQuestionPage> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Answer: ${data['answer'] ?? ''}'),
+                          Text('Answer: ${data['correctAnswer'] ?? ''}'),
                           if (options.isNotEmpty)
                             Padding(
                               padding: const EdgeInsets.only(top: 4.0),
@@ -221,7 +221,7 @@ class AddQuestionPageState extends State<AddQuestionPage> {
                                 () => editQuestion(
                                   questionId,
                                   data['question'] ?? '',
-                                  data['answer'] ?? '',
+                                  data['correctAnswer'] ?? '',
                                   options,
                                 ),
                           ),

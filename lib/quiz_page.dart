@@ -27,7 +27,7 @@ class _QuizPageState extends State<QuizPage> {
             .collection('tests')
             .doc(widget.testId)
             .collection('questions')
-            .orderBy('timestamp')
+            .orderBy('createdAt') // <-- match your Firestore field
             .get();
 
     setState(() {
@@ -98,8 +98,8 @@ class _QuizPageState extends State<QuizPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(data['text'], style: TextStyle(fontSize: 18)),
-            ...((data['options'] as List<dynamic>).map((option) {
+            Text(data['question'] ?? '', style: TextStyle(fontSize: 18)),
+            ...((data['options'] as List<dynamic>? ?? []).map((option) {
               return RadioListTile(
                 title: Text(option),
                 value: option,
