@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           /// --- Notice Section ---
           Card(
-            color: const Color.fromARGB(255, 204, 192, 207),//notice card color
+            color: Colors.yellow[100],
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
