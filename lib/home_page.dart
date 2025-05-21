@@ -1,8 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lab9/user.dart';
 import 'user.dart';
 
 class HomePage extends StatefulWidget {
+  final bool isDarkMode;
+  final ValueChanged<bool> onThemeChanged;
+
+  const HomePage({
+    required this.isDarkMode,
+    required this.onThemeChanged,
+    Key? key,
+  }) : super(key: key);
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -13,11 +24,26 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Home')),
+      appBar: AppBar(
+        title: Text("Home Page"),
+        actions: [
+          Row(
+            children: [
+              Icon(Icons.light_mode),
+              Switch(
+                value: widget.isDarkMode,
+                onChanged: widget.onThemeChanged,
+              ),
+              Icon(Icons.dark_mode),
+              SizedBox(width: 12),
+            ],
+          ),
+        ],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Notice Section
+          /// --- Notice Section ---
           Card(
             color: Colors.yellow[100],
             child: Padding(
@@ -40,7 +66,7 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(height: 24),
 
-          // Test Packages Section
+          /// --- Test Packages Section ---
           Row(
             children: [
               Text(
@@ -53,11 +79,10 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: 170,
             child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance
-                      .collection('tests')
-                      .orderBy('createdAt', descending: true)
-                      .snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('tests')
+                  .orderBy('createdAt', descending: true)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -65,6 +90,7 @@ class _HomePageState extends State<HomePage> {
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return Center(child: Text('No test packages available.'));
                 }
+
                 final tests = snapshot.data!.docs;
                 return ListView.separated(
                   scrollDirection: Axis.horizontal,
@@ -124,14 +150,18 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             _selectedIndex = index;
           });
+
           if (index == 2) {
-            // Navigate to UserPage when Profile is tapped
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => UserPage()),
+              MaterialPageRoute(
+                builder: (_) => UserPage(
+                  isDarkMode: widget.isDarkMode,
+                  onThemeChanged: widget.onThemeChanged,
+                ),
+              ),
             );
           }
-          // You can add navigation for other tabs if needed
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
