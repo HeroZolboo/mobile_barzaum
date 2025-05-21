@@ -23,17 +23,31 @@ class TestListPage extends StatelessWidget {
                   itemCount: tests.length,
                   itemBuilder: (context, index) {
                     final test = tests[index].data() as Map<String, dynamic>;
-                    return ListTile(
-                      title: Text(test['title']),
-                      subtitle: Text('Language: ${test['language']}'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => QuizPage(testId: tests[index].id),
+                    return Card(
+                      color: Colors.blue[50], // ✅ жагсаалтын фоны өнгө
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 6.0, horizontal: 12.0),
+                      child: ListTile(
+                        title: Text(
+                          test['title'],
+                          style: TextStyle(
+                            color: Colors.blue[900], // ✅ гарчгийн өнгө
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      },
+                        ),
+                        subtitle: Text(
+                          'Language: ${test['language']}',
+                          style: TextStyle(color: Colors.grey[800]),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => QuizPage(testId: tests[index].id),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   },
                 );

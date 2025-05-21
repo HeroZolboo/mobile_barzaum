@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           /// --- Notice Section ---
           Card(
-            color: Colors.yellow[100],
+            color: const Color.fromARGB(255, 204, 192, 207),//notice card color
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> {
               Text(
                 'Test Packages',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                
               ),
             ],
           ),

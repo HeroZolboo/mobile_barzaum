@@ -19,10 +19,10 @@ class LoginPageState extends State<LoginPage> {
 
   // Товчийн өнгөний хувьсагчид
   final Color primaryColor = Colors.deepPurple; // гол өнгө
-  final Color secondaryColor = Colors.amber; // хоёрдогч өнгө
-  final Color backgroundColor = Color(0xFFF0F0F0); // хүндэтгэлийн арын өнгө
-  final Color inputFillColor = Colors.white; // текст талбарын арын өнгө
-  final Color buttonTextColor = Colors.white; // товчийн текстийн өнгө
+  final Color secondaryColor = const Color.fromARGB(255, 250, 250, 250); // хоёрдогч өнгө
+  final Color backgroundColor = Color.fromARGB(255, 255, 255, 255); // хүндэтгэлийн арын өнгө
+  final Color inputFillColor = const Color.fromARGB(255, 221, 210, 210); // текст талбарын арын өнгө
+  final Color buttonTextColor = const Color.fromARGB(255, 237, 232, 232); // товчийн текстийн өнгө
   final Color linkColor = Colors.blueAccent; // холбоос текстийн өнгө
 
   //submitting the form
@@ -50,7 +50,7 @@ class LoginPageState extends State<LoginPage> {
               builder:
                   (_) => AdminPage(
                     onThemeChanged: (bool value) {
-                      // dark mode өөрчлөлтийн үйлдэл
+                      // dark mode 
                     },
                     currentThemeMode: ThemeMode.light,
                   ),
@@ -64,7 +64,7 @@ class LoginPageState extends State<LoginPage> {
                   (_) => UserPage(
                     isDarkMode: false,
                     onThemeChanged: (bool value) {
-                      // dark mode өөрчлөх үйлдэл
+                      // dark mode 
                     },
                   ),
             ),
