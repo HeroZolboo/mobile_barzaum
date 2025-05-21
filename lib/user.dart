@@ -30,52 +30,65 @@ class _UserPageState extends State<UserPage> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: widget.isDarkMode ? Colors.grey[900] : Colors.white,
-        title: Text(
-          'Edit User',
-          style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black),
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-              style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black),
+      builder:
+          (context) => AlertDialog(
+            backgroundColor:
+                widget.isDarkMode ? Colors.grey[900] : Colors.white,
+            title: Text(
+              'Edit User',
+              style: TextStyle(
+                color: widget.isDarkMode ? Colors.white : Colors.black,
+              ),
             ),
-            TextField(
-              controller: ageController,
-              decoration: InputDecoration(labelText: 'Age'),
-              keyboardType: TextInputType.number,
-              style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(labelText: 'Name'),
+                  style: TextStyle(
+                    color: widget.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                TextField(
+                  controller: ageController,
+                  decoration: InputDecoration(labelText: 'Age'),
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                    color: widget.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                TextField(
+                  controller: phoneController,
+                  decoration: InputDecoration(labelText: 'Phone Number'),
+                  keyboardType: TextInputType.phone,
+                  style: TextStyle(
+                    color: widget.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+              ],
             ),
-            TextField(
-              controller: phoneController,
-              decoration: InputDecoration(labelText: 'Phone Number'),
-              keyboardType: TextInputType.phone,
-              style: TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(uid)
+                      .update({
+                        'name': nameController.text.trim(),
+                        'age': int.tryParse(ageController.text.trim()) ?? 0,
+                        'phone_number': phoneController.text.trim(),
+                      });
+                  Navigator.pop(context);
+                },
+                child: Text('Update'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () async {
-              await FirebaseFirestore.instance.collection('users').doc(uid).update({
-                'name': nameController.text.trim(),
-                'age': int.tryParse(ageController.text.trim()) ?? 0,
-                'phone_number': phoneController.text.trim(),
-              });
-              Navigator.pop(context);
-            },
-            child: Text('Update'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -103,7 +116,11 @@ class _UserPageState extends State<UserPage> {
           ],
         ),
         body: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance.collection('users').doc(currentUser?.uid).snapshots(),
+          stream:
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(currentUser?.uid)
+                  .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -153,24 +170,6 @@ class _UserPageState extends State<UserPage> {
                     ],
                   ),
                   SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => TestListPage()),
-                      );
-                    },
-                    child: Text("View Tests"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => ScoreHistoryPage()),
-                      );
-                    },
-                    child: Text("View Score History"),
-                  ),
                 ],
               ),
             );

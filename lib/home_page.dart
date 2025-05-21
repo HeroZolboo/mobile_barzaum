@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lab9/user.dart';
 import 'user.dart';
+import 'test_list_page.dart';
 
 class HomePage extends StatefulWidget {
   final bool isDarkMode;
@@ -79,10 +80,11 @@ class _HomePageState extends State<HomePage> {
           SizedBox(
             height: 170,
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('tests')
-                  .orderBy('createdAt', descending: true)
-                  .snapshots(),
+              stream:
+                  FirebaseFirestore.instance
+                      .collection('tests')
+                      .orderBy('createdAt', descending: true)
+                      .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -151,14 +153,31 @@ class _HomePageState extends State<HomePage> {
             _selectedIndex = index;
           });
 
-          if (index == 2) {
+          if (index == 0) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => UserPage(
-                  isDarkMode: widget.isDarkMode,
-                  onThemeChanged: widget.onThemeChanged,
-                ),
+                builder:
+                    (_) => HomePage(
+                      isDarkMode: widget.isDarkMode,
+                      onThemeChanged: widget.onThemeChanged,
+                    ),
+              ),
+            );
+          } else if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => TestListPage()),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => UserPage(
+                      isDarkMode: widget.isDarkMode,
+                      onThemeChanged: widget.onThemeChanged,
+                    ),
               ),
             );
           }

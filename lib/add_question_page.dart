@@ -12,27 +12,32 @@ class AddQuestionPage extends StatefulWidget {
 class AddQuestionPageState extends State<AddQuestionPage> {
   final questionController = TextEditingController();
   final answerController = TextEditingController();
+
+  //mcq options text controllers
   final List<TextEditingController> optionControllers = [
     TextEditingController(),
     TextEditingController(),
     TextEditingController(),
     TextEditingController(),
   ];
-
+  @override
   void addQuestion() async {
     final question = questionController.text.trim();
     final correctAnswer = answerController.text.trim();
     final options =
         optionControllers
-            .map((c) => c.text.trim())
-            .where((o) => o.isNotEmpty)
-            .toList();
+            .map((c) => c.text.trim()) // Get text from each option controller
+            .where((o) => o.isNotEmpty) // Filter out empty options
+            .toList(); // Convert to a list
 
+    // Check if question and correct answer are not empty
+    // and at least one option is provided
+    //also clear the text fields
     if (question.isNotEmpty && correctAnswer.isNotEmpty) {
       await FirebaseFirestore.instance
           .collection('tests')
-          .doc(widget.testId)
-          .collection('questions')
+          .doc(widget.testId) // Use the testId passed to this page
+          .collection('questions') // Use testId to create subcollection
           .add({
             'question': question,
             'correctAnswer': correctAnswer,
@@ -48,6 +53,7 @@ class AddQuestionPageState extends State<AddQuestionPage> {
     }
   }
 
+  //Function to edit questions
   void editQuestion(
     String questionId,
     String currentQ,
@@ -63,6 +69,7 @@ class AddQuestionPageState extends State<AddQuestionPage> {
       ),
     );
 
+    // Show dialog to edit question
     showDialog(
       context: context,
       builder:

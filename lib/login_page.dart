@@ -19,12 +19,13 @@ class LoginPageState extends State<LoginPage> {
 
   // Товчийн өнгөний хувьсагчид
   final Color primaryColor = Colors.deepPurple; // гол өнгө
-  final Color secondaryColor = Colors.amber;   // хоёрдогч өнгө
+  final Color secondaryColor = Colors.amber; // хоёрдогч өнгө
   final Color backgroundColor = Color(0xFFF0F0F0); // хүндэтгэлийн арын өнгө
-  final Color inputFillColor = Colors.white;   // текст талбарын арын өнгө
-  final Color buttonTextColor = Colors.white;  // товчийн текстийн өнгө
-  final Color linkColor = Colors.blueAccent;   // холбоос текстийн өнгө
+  final Color inputFillColor = Colors.white; // текст талбарын арын өнгө
+  final Color buttonTextColor = Colors.white; // товчийн текстийн өнгө
+  final Color linkColor = Colors.blueAccent; // холбоос текстийн өнгө
 
+  //submitting the form
   void submit() async {
     final name = nameCon.text.trim();
     final age = ageCon.text.trim();
@@ -38,57 +39,61 @@ class LoginPageState extends State<LoginPage> {
           password: password,
         );
         final uid = userCred.user!.uid;
-        final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        final doc =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
         final role = doc.data()?['role'] ?? 'user';
 
         if (role == 'admin') {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => AdminPage(
-                onThemeChanged: (bool value) {
-                  // dark mode өөрчлөлтийн үйлдэл
-                },
-                currentThemeMode: ThemeMode.light,
-              ),
+              builder:
+                  (_) => AdminPage(
+                    onThemeChanged: (bool value) {
+                      // dark mode өөрчлөлтийн үйлдэл
+                    },
+                    currentThemeMode: ThemeMode.light,
+                  ),
             ),
           );
         } else {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (_) => UserPage(
-                isDarkMode: false,
-                onThemeChanged: (bool value) {
-                  // dark mode өөрчлөх үйлдэл
-                },
-              ),
+              builder:
+                  (_) => UserPage(
+                    isDarkMode: false,
+                    onThemeChanged: (bool value) {
+                      // dark mode өөрчлөх үйлдэл
+                    },
+                  ),
             ),
           );
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login successfully")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Login successfully")));
       } else {
-        final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        await FirebaseFirestore.instance.collection('users').doc(credential.user!.uid).set({
-          'name': name,
-          'age': int.tryParse(age) ?? 0,
-          'email': email,
-          'role': 'user',
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Account created successfully")),
-        );
+        final credential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(credential.user!.uid)
+            .set({
+              'name': name,
+              'age': int.tryParse(age) ?? 0,
+              'email': email,
+              'role': 'user',
+            });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Account created successfully")));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: ${e.toString()}")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: ${e.toString()}")));
     }
   }
 
@@ -110,7 +115,9 @@ class LoginPageState extends State<LoginPage> {
                 filled: true,
                 fillColor: inputFillColor,
                 labelStyle: TextStyle(color: primaryColor),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: secondaryColor, width: 2),
                   borderRadius: BorderRadius.circular(10),
@@ -125,7 +132,9 @@ class LoginPageState extends State<LoginPage> {
                 filled: true,
                 fillColor: inputFillColor,
                 labelStyle: TextStyle(color: primaryColor),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: secondaryColor, width: 2),
                   borderRadius: BorderRadius.circular(10),
@@ -139,10 +148,13 @@ class LoginPageState extends State<LoginPage> {
           TextField(
             decoration: InputDecoration(
               labelText: 'Email',
+              
               filled: true,
               fillColor: inputFillColor,
               labelStyle: TextStyle(color: primaryColor),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: secondaryColor, width: 2),
                 borderRadius: BorderRadius.circular(10),
@@ -158,7 +170,9 @@ class LoginPageState extends State<LoginPage> {
               filled: true,
               fillColor: inputFillColor,
               labelStyle: TextStyle(color: primaryColor),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: secondaryColor, width: 2),
                 borderRadius: BorderRadius.circular(10),
@@ -175,7 +189,9 @@ class LoginPageState extends State<LoginPage> {
               });
             },
             child: Text(
-              isLogin ? "Don't have an account? Register now" : "Already have an account? Login",
+              isLogin
+                  ? "Don't have an account? Register now"
+                  : "Already have an account? Login",
               style: TextStyle(color: linkColor, fontWeight: FontWeight.w600),
             ),
           ),

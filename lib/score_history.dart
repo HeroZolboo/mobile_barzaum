@@ -48,7 +48,6 @@ class ScoreHistoryPage extends StatelessWidget {
               final total = data['total'] ?? 0;
               final submittedAt = (data['submittedAt'] as Timestamp).toDate();
 
-              
               // If not found, show the testId
               return FutureBuilder<DocumentSnapshot>(
                 future:

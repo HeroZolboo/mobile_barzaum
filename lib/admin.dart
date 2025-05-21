@@ -18,7 +18,13 @@ class AdminPage extends StatelessWidget {
     await FirebaseFirestore.instance.collection('users').doc(uid).delete();
   }
 
-  void updateUser(String uid, String name, String age, String role, String phoneNumber) async {
+  void updateUser(
+    String uid,
+    String name,
+    String age,
+    String role,
+    String phoneNumber,
+  ) async {
     await FirebaseFirestore.instance.collection('users').doc(uid).update({
       'name': name,
       'age': int.tryParse(age) ?? 0,
@@ -27,52 +33,84 @@ class AdminPage extends StatelessWidget {
     });
   }
 
-  Future<void> addUser(String name, String age, String email, String role, String password, String phoneNumber) async {
+  Future<void> addUser(
+    String name,
+    String age,
+    String email,
+    String role,
+    String password,
+    String phoneNumber,
+  ) async {
     final userCredential = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
 
-    await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
-      'name': name,
-      'age': int.tryParse(age) ?? 0,
-      'email': email,
-      'role': role,
-      'phone_number': phoneNumber,
-    });
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .set({
+          'name': name,
+          'age': int.tryParse(age) ?? 0,
+          'email': email,
+          'role': role,
+          'phone_number': phoneNumber,
+        });
   }
 
-  void showEdit(BuildContext context, String uid, String name, String age, String role, String phoneNumber) {
+  void showEdit(
+    BuildContext context,
+    String uid,
+    String name,
+    String age,
+    String role,
+    String phoneNumber,
+  ) {
     final nameCon = TextEditingController(text: name);
     final ageCon = TextEditingController(text: age);
     final roleCon = TextEditingController(text: role);
     final phoneCon = TextEditingController(text: phoneNumber);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Edit User'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(controller: nameCon, decoration: InputDecoration(labelText: 'Name')),
-            TextField(controller: ageCon, decoration: InputDecoration(labelText: 'Age'), keyboardType: TextInputType.number),
-            TextField(controller: roleCon, decoration: InputDecoration(labelText: 'Role')),
-            TextField(controller: phoneCon, decoration: InputDecoration(labelText: 'Phone Number')),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
-          ElevatedButton(
-            onPressed: () async {
-              final newName = nameCon.text.trim();
-              final newAge = ageCon.text.trim();
-              final newRole = roleCon.text.trim();
-              final newPhone = phoneCon.text.trim();
-
-          
-            },
-            child: Text('Update'),
+      builder:
+          (context) => AlertDialog(
+            title: Text('Edit User'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameCon,
+                  decoration: InputDecoration(labelText: 'Name'),
+                ),
+                TextField(
+                  controller: ageCon,
+                  decoration: InputDecoration(labelText: 'Age'),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: roleCon,
+                  decoration: InputDecoration(labelText: 'Role'),
+                ),
+                TextField(
+                  controller: phoneCon,
+                  decoration: InputDecoration(labelText: 'Phone Number'),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final newName = nameCon.text.trim();
+                  final newAge = ageCon.text.trim();
+                  final newRole = roleCon.text.trim();
+                  final newPhone = phoneCon.text.trim();
+                },
+                child: Text('Update'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -83,12 +121,7 @@ class AdminPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Admin Page'),
-        actions: [
-          Switch(
-            value: isDark,
-            onChanged: onThemeChanged,
-          ),
-        ],
+        actions: [Switch(value: isDark, onChanged: onThemeChanged)],
       ),
       body: Column(
         children: [
@@ -115,7 +148,10 @@ class AdminPage extends StatelessWidget {
                     icon: Icon(Icons.assignment),
                     label: Text('Create Test'),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => CreateTestPage()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => CreateTestPage()),
+                      );
                     },
                   ),
                 ],
@@ -126,7 +162,8 @@ class AdminPage extends StatelessWidget {
           // Users List
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('users').snapshots(),
+              stream:
+                  FirebaseFirestore.instance.collection('users').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting)
                   return Center(child: CircularProgressIndicator());
@@ -145,12 +182,17 @@ class AdminPage extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Card(
                         elevation: 4,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: ListTile(
                           contentPadding: EdgeInsets.all(16),
                           title: Text(
                             data['name'] ?? '',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,46 +260,82 @@ class AdminPage extends StatelessWidget {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Add New User'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(controller: nameController, decoration: InputDecoration(labelText: 'Name')),
-              TextField(controller: ageController, decoration: InputDecoration(labelText: 'Age'), keyboardType: TextInputType.number),
-              TextField(controller: emailController, decoration: InputDecoration(labelText: 'Email')),
-              TextField(controller: roleController, decoration: InputDecoration(labelText: 'Role')),
-              TextField(controller: passwordController, decoration: InputDecoration(labelText: 'Password'), obscureText: true),
-              TextField(controller: phoneController, decoration: InputDecoration(labelText: 'Phone Number')),
+      builder:
+          (context) => AlertDialog(
+            title: Text('Add New User'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(labelText: 'Name'),
+                  ),
+                  TextField(
+                    controller: ageController,
+                    decoration: InputDecoration(labelText: 'Age'),
+                    keyboardType: TextInputType.number,
+                  ),
+                  TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(labelText: 'Email'),
+                  ),
+                  TextField(
+                    controller: roleController,
+                    decoration: InputDecoration(labelText: 'Role'),
+                  ),
+                  TextField(
+                    controller: passwordController,
+                    decoration: InputDecoration(labelText: 'Password'),
+                    obscureText: true,
+                  ),
+                  TextField(
+                    controller: phoneController,
+                    decoration: InputDecoration(labelText: 'Phone Number'),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final name = nameController.text.trim();
+                  final age = ageController.text.trim();
+                  final email = emailController.text.trim();
+                  final role = roleController.text.trim();
+                  final password = passwordController.text.trim();
+                  final phone = phoneController.text.trim();
+
+                  if ([
+                    name,
+                    age,
+                    email,
+                    role,
+                    password,
+                    phone,
+                  ].any((e) => e.isEmpty))
+                    return;
+
+                  try {
+                    await addUser(name, age, email, role, password, phone);
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('User added successfully')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                  }
+                },
+                child: Text('Add'),
+              ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
-          ElevatedButton(
-            onPressed: () async {
-              final name = nameController.text.trim();
-              final age = ageController.text.trim();
-              final email = emailController.text.trim();
-              final role = roleController.text.trim();
-              final password = passwordController.text.trim();
-              final phone = phoneController.text.trim();
-
-              if ([name, age, email, role, password, phone].any((e) => e.isEmpty)) return;
-
-              try {
-                await addUser(name, age, email, role, password, phone);
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User added successfully')));
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-              }
-            },
-            child: Text('Add'),
-          ),
-        ],
-      ),
     );
   }
 }
