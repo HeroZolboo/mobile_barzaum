@@ -45,25 +45,28 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(16),
         children: [
           /// --- Notice Section ---
-          Card(
-            color: Colors.yellow[100],
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Notice',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Welcome! Please check the latest updates and test packages below.',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
+          StreamBuilder<QuerySnapshot>(
+            stream:
+                FirebaseFirestore.instance
+                    .collection('notices')
+                    .orderBy('timestamp', descending: true)
+                    .limit(1)
+                    .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return SizedBox();
+              final docs = snapshot.data!.docs;
+              if (docs.isEmpty) return SizedBox();
+              final notice = docs.first['text'] ?? '';
+              return Card(
+                color: Colors.yellow[100],
+                margin: EdgeInsets.all(16),
+                child: ListTile(
+                  leading: Icon(Icons.announcement, color: Colors.orange),
+                  title: Text('Notice'),
+                  subtitle: Text(notice),
+                ),
+              );
+            },
           ),
           SizedBox(height: 24),
 

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lab9/login_page.dart';
 import 'create_test_page.dart';
+import 'add_notice.dart';
 
 class AdminPage extends StatelessWidget {
   final Function(bool) onThemeChanged;
@@ -154,6 +155,18 @@ class AdminPage extends StatelessWidget {
                       );
                     },
                   ),
+
+                  SizedBox(width: 8),
+                  ElevatedButton.icon(
+                    icon: Icon(Icons.add_alert_outlined),
+                    label: Text('Add Notice'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => AddNoticePage()),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -187,17 +200,43 @@ class AdminPage extends StatelessWidget {
                         ),
                         child: ListTile(
                           contentPadding: EdgeInsets.all(16),
-                          title: Text(
-                            data['name'] ?? '',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
+                          title: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 24,
+                                backgroundImage:
+                                    data['pfp_url'] !=
+                                                null && // Check if URL is not empty
+                                            data['pfp_url']
+                                                .toString()
+                                                .isNotEmpty
+                                        ? NetworkImage(data['pfp_url'])
+                                        : null,
+                                child:
+                                    (data['pfp_url'] == null ||
+                                            data['pfp_url']
+                                                .toString()
+                                                .isEmpty) //
+                                        ? Icon(Icons.person, size: 28)
+                                        : null,
+                              ),
+                              SizedBox(width: 16),
+                              Expanded(
+                                child: Text(
+                                  data['name'] ?? '',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 4),
+                              SizedBox(height: 15),
                               Text('Email: ${data['email']}'),
                               Text('Role: ${data['role']}'),
                               Text('Phone: ${data['phone_number'] ?? ''}'),
@@ -207,22 +246,27 @@ class AdminPage extends StatelessWidget {
                           trailing: Wrap(
                             spacing: 8,
                             children: [
-                              IconButton(
-                                icon: Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () {
-                                  showEdit(
-                                    context,
-                                    user.id,
-                                    data['name'] ?? '',
-                                    data['age'].toString(),
-                                    data['role'] ?? '',
-                                    data['phone_number'] ?? '',
-                                  );
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => deleteUser(user.id),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit, color: Colors.blue),
+                                    onPressed: () {
+                                      showEdit(
+                                        context,
+                                        user.id,
+                                        data['name'] ?? '',
+                                        data['age'].toString(),
+                                        data['role'] ?? '',
+                                        data['phone_number'] ?? '',
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () => deleteUser(user.id),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

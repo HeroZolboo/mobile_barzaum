@@ -20,10 +20,12 @@ class _UserPageState extends State<UserPage> {
   void showEdit(
     BuildContext context,
     String uid,
+    String pfp_url,
     String name,
     String age,
     String phoneNumber,
   ) {
+    final pfpUrlController = TextEditingController(text: pfp_url);
     final nameController = TextEditingController(text: name);
     final ageController = TextEditingController(text: age);
     final phoneController = TextEditingController(text: phoneNumber);
@@ -43,6 +45,13 @@ class _UserPageState extends State<UserPage> {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                TextField(
+                  controller: pfpUrlController,
+                  decoration: InputDecoration(labelText: 'Profile Picture URL'),
+                  style: TextStyle(
+                    color: widget.isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(labelText: 'Name'),
@@ -79,6 +88,7 @@ class _UserPageState extends State<UserPage> {
                       .collection('users')
                       .doc(uid)
                       .update({
+                        'pfp_url': pfpUrlController.text.trim(),
                         'name': nameController.text.trim(),
                         'age': int.tryParse(ageController.text.trim()) ?? 0,
                         'phone_number': phoneController.text.trim(),
@@ -137,6 +147,15 @@ class _UserPageState extends State<UserPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (data['pfp_url'] != null &&
+                      data['pfp_url'].toString().isNotEmpty)
+                    Center(
+                      child: CircleAvatar(
+                        radius: 48,
+                        backgroundImage: NetworkImage(data['pfp_url']),
+                      ),
+                    ),
+                  SizedBox(height: 16),
                   Text('Name: ${data['name']}'),
                   Text('Age: ${data['age']}'),
                   Text('Email: ${data['email']}'),
@@ -161,6 +180,7 @@ class _UserPageState extends State<UserPage> {
                           showEdit(
                             context,
                             currentUser?.uid ?? '',
+                            data['pfp_url'] ?? '',
                             data['name'] ?? '',
                             data['age'].toString(),
                             data['phone_number'] ?? '',
